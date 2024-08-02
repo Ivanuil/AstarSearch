@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BasicSolverWithStaticSquareMeshOnHomogeneousFieldTest {
 
     @Test
-    public void basicSolverWithSquareMeshOnHomogeneousFieldTest() {
+    public void basicSolverWithStaticSquareMeshOnHomogeneousFieldTest() {
         Mesh mesh = new StaticSquareMesh(
                 new Coordinates(5, 5),
                 new Coordinates(95, 95),

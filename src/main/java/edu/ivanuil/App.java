@@ -1,12 +1,14 @@
 package edu.ivanuil;
 
 import edu.ivanuil.cell.Cell;
+import edu.ivanuil.field.Field;
 import edu.ivanuil.field.HomogeneousField;
-import edu.ivanuil.mesh.StaticSquareMesh;
+import edu.ivanuil.mesh.DynamicSquareMesh;
+import edu.ivanuil.mesh.Mesh;
 import edu.ivanuil.solver.BasicSolver;
 import edu.ivanuil.solver.Solver;
 import edu.ivanuil.util.Coordinates;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 import javax.swing.*;
@@ -16,29 +18,42 @@ import java.util.Set;
 
 public class App {
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         JFrame mainFrame = new JFrame();
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(800, 800);
 
-        StaticSquareMesh mesh = new StaticSquareMesh(
-                new Coordinates(15, 15),
-                new Coordinates(105, 105),
-                new Coordinates(10, 10),
-                new Coordinates(110, 110),
-                1);
+//        Mesh mesh = new StaticSquareMesh(
+//                new Coordinates(15, 15),
+//                new Coordinates(105, 105),
+//                new Coordinates(10, 10),
+//                new Coordinates(110, 110),
+//                1);
 
-        Canvas canvas = new Canvas(6, mesh.getCells());
+        Mesh mesh = new DynamicSquareMesh(
+                new Coordinates(45, 15),
+                new Coordinates(105, 105),
+                10);
+
+        Field field = new HomogeneousField(1); // new PuncturedField(1);
+//        field.addHole(new Rectangle(
+//                new Coordinates(40, 40),
+//                new Coordinates(60, 60)
+//        ));
+
+        Solver solver = new BasicSolver(mesh, field);
+
+        Canvas canvas = new Canvas(6, mesh.getCells(), List.of());
         mainFrame.add(canvas);
         mainFrame.setVisible(true);
 
-        Solver solver = new BasicSolver(mesh, new HomogeneousField(1));
         solver.solve();
         canvas.setPath(solver.getPath());
+        canvas.setCells(mesh.getCells());
         canvas.repaint();
     }
 
-    @RequiredArgsConstructor
+    @AllArgsConstructor
     private static class Canvas extends JPanel {
 
         private final double scale;
@@ -46,7 +61,8 @@ public class App {
         private final int topOffset = 50;
         private final int leftOffset = 50;
 
-        private final Set<Cell> cells;
+        @Setter
+        private Set<Cell> cells;
         @Setter
         private List<Cell> path;
 

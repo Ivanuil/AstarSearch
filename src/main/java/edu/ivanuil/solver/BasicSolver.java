@@ -2,15 +2,13 @@ package edu.ivanuil.solver;
 
 import edu.ivanuil.cell.Cell;
 import edu.ivanuil.cell.CellMeta;
+import edu.ivanuil.cell.CellState;
 import edu.ivanuil.field.Field;
 import edu.ivanuil.mesh.Mesh;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -38,20 +36,21 @@ public class BasicSolver implements Solver {
     }
 
     private boolean makeStep() {
-        double minV = Double.POSITIVE_INFINITY;
-        for (var cellMeta : openList) {
-            double difficulty = cellMeta.pathTotalDifficulty()
-                    + cellMeta.cell().getHeuristicDistance(mesh.getEndCell());
-            if (difficulty < minV) {
-                chosenCell = cellMeta;
-                minV = difficulty;
-            }
-        }
+        var chosenCellOpt = openList.stream()
+                .filter(
+                        cellMeta -> cellMeta.cell().getCellState() != CellState.TRAVERSED)
+                .min(Comparator.comparingDouble(
+                        cellMeta -> cellMeta.pathTotalDifficulty()
+                                + cellMeta.cell().getHeuristicDistance(mesh.getEndCell())));
+        if (chosenCellOpt.isEmpty())
+            throw new RuntimeException("Unable to solve, not cell for next step");
+        chosenCell = chosenCellOpt.get();
         openList.remove(chosenCell);
 
         if (chosenCell.cell() == mesh.getEndCell()) {
             return false;
         }
+        chosenCell.cell().setCellState(CellState.TRAVERSED);
 
         CellMeta finalChosenCell = chosenCell;
         chosenCell.cell().getAdjacentCells()
@@ -59,8 +58,7 @@ public class BasicSolver implements Solver {
                         finalChosenCell.pathLength() +
                                 cell.getCenter().getDistance(finalChosenCell.cell().getCenter()),
                         finalChosenCell.pathTotalDifficulty() +
-                                cell.getCenter().getDistance(finalChosenCell.cell().getCenter())
-                                        * field.getDifficulty(cell.getCenter()))));
+                                field.getDifficulty(cell.getCenter(), finalChosenCell.cell().getCenter()))));
         return true;
     }
 

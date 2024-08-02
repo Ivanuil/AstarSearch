@@ -4,10 +4,6 @@ import edu.ivanuil.util.Coordinates;
 
 public interface Field {
 
-    double getDifficulty(double longitude, double latitude);
-
-    default double getDifficulty(Coordinates coordinates) {
-        return getDifficulty(coordinates.longitude(), coordinates.latitude());
-    }
+    double getDifficulty(Coordinates point1, Coordinates point2);
 
 }

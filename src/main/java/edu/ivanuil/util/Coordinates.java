@@ -18,6 +18,12 @@ public record Coordinates(
                 this.latitude() + secondPoint.latitude());
     }
 
+    public Coordinates add(double longitude, double latitude) {
+        return new Coordinates(
+                this.longitude + longitude,
+                this.latitude + latitude);
+    }
+
     public Coordinates subtract(@NotNull Coordinates secondPoint) {
         return new Coordinates(
                 this.longitude() - secondPoint.longitude(),

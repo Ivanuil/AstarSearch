@@ -18,4 +18,6 @@ public interface Cell {
 
     CellState getCellState();
 
+    void setCellState(CellState state);
+
 }
