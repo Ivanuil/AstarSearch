@@ -86,7 +86,7 @@ public class App {
             for (Cell cell : path) {
                 g.drawOval(
                         convertCoordinates(cell.getCenter().longitude(), leftOffset),
-                        convertCoordinates(cell.getCenter().longitude(), topOffset),
+                        convertCoordinates(cell.getCenter().latitude(), topOffset),
                         10, 10);
             }
         }
