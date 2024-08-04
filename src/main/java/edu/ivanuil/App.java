@@ -1,13 +1,13 @@
 package edu.ivanuil;
 
 import edu.ivanuil.cell.Cell;
-import edu.ivanuil.field.Field;
-import edu.ivanuil.field.HomogeneousField;
+import edu.ivanuil.field.PuncturedField;
 import edu.ivanuil.mesh.DynamicSquareMesh;
 import edu.ivanuil.mesh.Mesh;
 import edu.ivanuil.solver.BasicSolver;
 import edu.ivanuil.solver.Solver;
 import edu.ivanuil.util.Coordinates;
+import edu.ivanuil.util.Rectangle;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 
@@ -31,19 +31,18 @@ public class App {
 //                1);
 
         Mesh mesh = new DynamicSquareMesh(
-                new Coordinates(45, 15),
-                new Coordinates(105, 105),
+                new Coordinates(0, 0),
+                new Coordinates(100, 100),
                 10);
 
-        Field field = new HomogeneousField(1); // new PuncturedField(1);
-//        field.addHole(new Rectangle(
-//                new Coordinates(40, 40),
-//                new Coordinates(60, 60)
-//        ));
+        PuncturedField field = new PuncturedField(1);
+        field.addHole(new Rectangle(
+                new Coordinates(30, 30),
+                new Coordinates(70, 70)));
 
         Solver solver = new BasicSolver(mesh, field);
 
-        Canvas canvas = new Canvas(6, mesh.getCells(), List.of());
+        Canvas canvas = new Canvas(6, mesh.getCells(), List.of(), field.getHoles());
         mainFrame.add(canvas);
         mainFrame.setVisible(true);
 
@@ -65,6 +64,8 @@ public class App {
         private Set<Cell> cells;
         @Setter
         private List<Cell> path;
+        @Setter
+        private Set<Rectangle> holes;
 
         @Override
         public Dimension getPreferredSize() {
@@ -88,6 +89,14 @@ public class App {
                         convertCoordinates(cell.getCenter().longitude(), leftOffset),
                         convertCoordinates(cell.getCenter().latitude(), topOffset),
                         10, 10);
+            }
+
+            for (Rectangle hole : holes) {
+                g.drawRect(
+                        convertCoordinates(hole.leftBottom().longitude(), leftOffset),
+                        convertCoordinates(hole.leftBottom().latitude(), topOffset),
+                        convertCoordinates(hole.rightTop().longitude() - hole.leftBottom().longitude(), 0),
+                        convertCoordinates(hole.rightTop().latitude() - hole.leftBottom().latitude(), 0));
             }
         }
 

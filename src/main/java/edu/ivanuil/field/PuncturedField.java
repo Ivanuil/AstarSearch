@@ -19,6 +19,10 @@ public class PuncturedField implements Field {
         holes.add(hole);
     }
 
+    public Set<Rectangle> getHoles() {
+        return Set.copyOf(holes);
+    }
+
     @Override
     public double getDifficulty(Coordinates point1, Coordinates point2) {
         for (var hole : holes) {

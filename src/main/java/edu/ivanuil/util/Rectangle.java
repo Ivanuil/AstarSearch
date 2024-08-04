@@ -7,8 +7,8 @@ public record Rectangle(
     public boolean isInside(Coordinates point) {
         double longitude = point.longitude();
         double latitude = point.latitude();
-        return longitude > leftBottom().longitude() && latitude > leftBottom().longitude()
-                && longitude < rightTop().longitude() && latitude < rightTop().latitude();
+        return longitude >= leftBottom().longitude() && latitude >= leftBottom().longitude()
+                && longitude <= rightTop().longitude() && latitude <= rightTop().latitude();
     }
 
 }
