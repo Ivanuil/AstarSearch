@@ -15,8 +15,9 @@ public class PuncturedField implements Field {
         this.difficulty = baseDifficulty;
     }
 
-    public void addHole(Rectangle hole) {
+    public PuncturedField addHole(Rectangle hole) {
         holes.add(hole);
+        return this;
     }
 
     public Set<Rectangle> getHoles() {

@@ -18,11 +18,15 @@ public class StaticSquareMesh implements Mesh {
     private final StaticSquareCell startCell;
     @Getter
     private final StaticSquareCell endCell;
+    @Getter
+    private final double precision;
 
     public StaticSquareMesh(Coordinates start, Coordinates end,
                             Coordinates leftBottom, Coordinates rightTop, double precision) {
         if (isOutOfSpace(start, leftBottom, rightTop) || isOutOfSpace(end, leftBottom, rightTop))
             throw new IllegalArgumentException("Start or End point not in space");
+
+        this.precision = precision;
 
         StaticSquareCell[][] matrix = new StaticSquareCell
                 [(int) ((rightTop.longitude() - leftBottom.longitude()) / precision)]

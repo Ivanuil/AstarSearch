@@ -20,6 +20,7 @@ public class DynamicSquareMesh implements Mesh {
     private final DynamicSquareCell startCell;
     @Getter
     private final DynamicSquareCell endCell;
+    @Getter
     private final double precision;
 
     public DynamicSquareMesh(Coordinates start, Coordinates end, double precision) {

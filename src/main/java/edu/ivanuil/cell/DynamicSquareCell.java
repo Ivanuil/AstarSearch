@@ -89,9 +89,4 @@ public class DynamicSquareCell implements Cell {
         neighbours.add((DynamicSquareCell) cell);
     }
 
-    @Override
-    public double getHeuristicDistance(Cell target) {
-        return center.getDistance(target.getCenter());
-    }
-
 }

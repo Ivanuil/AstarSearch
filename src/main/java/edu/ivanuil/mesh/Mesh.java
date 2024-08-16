@@ -15,4 +15,6 @@ public interface Mesh {
     Cell getStartCell();
     Cell getEndCell();
 
+    double getPrecision();
+
 }

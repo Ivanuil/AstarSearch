@@ -14,8 +14,6 @@ public interface Cell {
 
     void addAdjacentCell(Cell cell);
 
-    double getHeuristicDistance(Cell target);
-
     CellState getCellState();
 
     void setCellState(CellState state);

@@ -42,11 +42,6 @@ public class StaticSquareCell implements Cell {
     }
 
     @Override
-    public double getHeuristicDistance(Cell target) {
-        return getCenter().getDistance(target.getCenter());
-    }
-
-    @Override
     public String toString() {
         return "Cell {" + center.longitude() + "; " + center.latitude() + "}";
     }

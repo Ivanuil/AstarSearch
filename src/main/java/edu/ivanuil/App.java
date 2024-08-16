@@ -1,7 +1,10 @@
 package edu.ivanuil;
 
 import edu.ivanuil.cell.Cell;
+import edu.ivanuil.field.Field;
 import edu.ivanuil.field.PuncturedField;
+import edu.ivanuil.heuristic_distance.HeuristicDistance;
+import edu.ivanuil.heuristic_distance.PythagoreanDistance;
 import edu.ivanuil.mesh.DynamicSquareMesh;
 import edu.ivanuil.mesh.Mesh;
 import edu.ivanuil.solver.BasicSolver;
@@ -23,24 +26,19 @@ public class App {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(800, 800);
 
-//        Mesh mesh = new StaticSquareMesh(
-//                new Coordinates(15, 15),
-//                new Coordinates(105, 105),
-//                new Coordinates(10, 10),
-//                new Coordinates(110, 110),
-//                1);
-
         Mesh mesh = new DynamicSquareMesh(
                 new Coordinates(0, 0),
                 new Coordinates(100, 100),
                 10);
 
-        PuncturedField field = new PuncturedField(1);
-        field.addHole(new Rectangle(
+        PuncturedField field = new PuncturedField(1)
+                .addHole(new Rectangle(
                 new Coordinates(30, 30),
                 new Coordinates(70, 70)));
 
-        Solver solver = new BasicSolver(mesh, field);
+        HeuristicDistance heuristicDistance = new PythagoreanDistance();
+
+        Solver solver = new BasicSolver(mesh, field, heuristicDistance);
 
         Canvas canvas = new Canvas(6, mesh.getCells(), List.of(), field.getHoles());
         mainFrame.add(canvas);
@@ -84,12 +82,25 @@ public class App {
                 drawLine(vertices.getLast(), vertices.getFirst(), g);
             });
 
-            for (Cell cell : path) {
-                g.drawOval(
-                        convertCoordinates(cell.getCenter().longitude(), leftOffset),
-                        convertCoordinates(cell.getCenter().latitude(), topOffset),
-                        10, 10);
+            Cell start = path.getFirst();
+            g.drawOval(
+                    convertCoordinates(start.getCenter().longitude(), leftOffset - 5),
+                    convertCoordinates(start.getCenter().latitude(), topOffset - 5),
+                    10, 10);
+            for (int i = 0; i < path.size() - 1; i++) {
+                Cell first = path.get(i);
+                Cell second = path.get(i + 1);
+                g.drawLine(
+                        convertCoordinates(first.getCenter().longitude(), leftOffset),
+                        convertCoordinates(first.getCenter().latitude(), topOffset),
+                        convertCoordinates(second.getCenter().longitude(), leftOffset),
+                        convertCoordinates(second.getCenter().latitude(), topOffset));
             }
+            Cell end = path.getLast();
+            g.drawOval(
+                    convertCoordinates(end.getCenter().longitude(), leftOffset - 5),
+                    convertCoordinates(end.getCenter().latitude(), topOffset - 5),
+                    10, 10);
 
             for (Rectangle hole : holes) {
                 g.drawRect(

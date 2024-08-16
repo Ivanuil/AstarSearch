@@ -4,6 +4,7 @@ import edu.ivanuil.cell.Cell;
 import edu.ivanuil.cell.CellMeta;
 import edu.ivanuil.cell.CellState;
 import edu.ivanuil.field.Field;
+import edu.ivanuil.heuristic_distance.HeuristicDistance;
 import edu.ivanuil.mesh.Mesh;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class BasicSolver implements Solver {
 
     private final Mesh mesh;
     private final Field field;
+    private final HeuristicDistance heuristicDistance;
 
     private final Set<CellMeta> openList = new HashSet<>();
     private CellMeta chosenCell = null;
@@ -29,7 +31,9 @@ public class BasicSolver implements Solver {
         int stepsCount = 0;
         while (makeStep()) {
             stepsCount++;
-            log.info("Made a step");
+            log.info("Made a step №{}, estimated remaining {}", stepsCount,
+                    (int) (heuristicDistance.getHeuristicDistance(chosenCell.cell(), mesh.getEndCell())
+                            / mesh.getPrecision()));
         }
         log.info("Path found in {} steps, total length: {}, total difficulty: {}",
                 stepsCount, chosenCell.pathLength(), chosenCell.pathTotalDifficulty());
@@ -41,7 +45,7 @@ public class BasicSolver implements Solver {
                         cellMeta -> cellMeta.cell().getCellState() != CellState.TRAVERSED)
                 .min(Comparator.comparingDouble(
                         cellMeta -> cellMeta.pathTotalDifficulty()
-                                + cellMeta.cell().getHeuristicDistance(mesh.getEndCell())));
+                                + heuristicDistance.getHeuristicDistance(chosenCell.cell(), mesh.getEndCell())));
         if (chosenCellOpt.isEmpty())
             throw new RuntimeException("Unable to solve, not cell for next step");
         chosenCell = chosenCellOpt.get();
